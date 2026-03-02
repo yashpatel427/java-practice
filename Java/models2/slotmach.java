@@ -89,7 +89,26 @@ public class slotmach{
             case "🍰" -> bet*20;     
             default -> 0 ;
             } ;
-            // to add condition where two matching symbols give output as win
+        }
+         else if (row[0].equals(row[1])) {
+           return switch(row[0]){
+            case "🍖" -> bet*2;
+            case "🥫" -> bet*3;
+            case "🍗" -> bet*4;
+            case "🍥" -> bet*5;
+            case "🍰" -> bet*6;     
+            default -> 0 ;
+            } ;
+        }
+        else if (row[1].equals(row[2])) {
+           return switch(row[1]){
+            case "🍖" -> bet*2;
+            case "🥫" -> bet*3;
+            case "🍗" -> bet*4;
+            case "🍥" -> bet*5;
+            case "🍰" -> bet*6;     
+            default -> 0 ;
+            } ;
         }
         return 0;
 
