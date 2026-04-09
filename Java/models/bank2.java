@@ -28,7 +28,7 @@ public class bank2 {
                 case 1 ->
                     showBalace(balance);
                 case 2 ->
-                    balance = +deposit();
+                    balance += deposit();
                 case 3 ->
                     balance -= withdraw(balance);   // if =- output will be negative
                 case 4 ->
