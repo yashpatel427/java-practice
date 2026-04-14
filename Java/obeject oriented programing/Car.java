@@ -13,6 +13,10 @@ public class Car {
         this.color = color;
     }
 
+    Car() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
     /* void start(){
        isRunning = true;
         System.out.println("You started the car");
