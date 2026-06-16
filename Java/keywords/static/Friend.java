@@ -11,6 +11,6 @@ public class Friend {
 
     static void showFriends() {
         System.out.println("You have total of " + numOfFriends + " friends"); // numOfFriends is static attribut so we don't need
-        //use this.variable to call variable.
+                                                                              // to use this.variable to call variable.
     }
 }
