@@ -5,6 +5,11 @@ import java.util.Scanner;
 public class numguess {
 
     public static void main(String[] args) throws InterruptedException {
+        //To do more in project list
+        //Difficulty levels (Easy: 1–50, Medium: 1–100, Hard: 1–1000)
+        // Limited attempts
+        // A score system 
+        //Input validation(prevent crashes if the user enters text instead of a number)
 
         Random random = new Random();
         Scanner scanner = new Scanner(System.in);
@@ -12,7 +17,7 @@ public class numguess {
         int guess;
         int computerChoice;
         boolean choice;
-        int Attempts =0;
+        int Attempts = 0;
 
         do {
             System.out.println();
@@ -22,7 +27,7 @@ public class numguess {
 
             System.out.println("The computer is selecting a random number between 1 to 100 ...");
             computerChoice = random.nextInt(1, 101);
-            
+
             Thread.sleep(1000);
             System.out.println("The computer has selected the number");
 
