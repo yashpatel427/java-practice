@@ -82,8 +82,8 @@ public class numguess {
                 }
             } while (guess != computerChoice && attempts < maxAttempts);
             if (guess != computerChoice && attempts < maxAttempts) {
-               System.out.println("You ran out of attempts");
-               System.out.println("The correct answer was: " + computerChoice); 
+                System.out.println("You ran out of attempts");
+                System.out.println("The correct answer was: " + computerChoice);
             }
             System.out.print("Do you want to play again(true/false) :");
             choice = scanner.nextBoolean();
