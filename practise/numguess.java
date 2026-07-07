@@ -16,9 +16,14 @@ public class numguess {
 
         int guess;
         int level;
+        int multiplier = 1;
+        int score = 0;
+        int highScore = 0;
+        int totalScore = 0;
         int computerChoice = 0;
         boolean choice;
         int maxAttempts = 0;
+        int remainingAttempts = 0;
         int maxNumber = 0;
 
         do {
@@ -30,6 +35,7 @@ public class numguess {
             System.out.print("Select the difficulty level you want to play(level : 1, 2, 3) : ");
             level = scanner.nextInt();
             int attempts = 0;
+            score = 0;
             switch (level) {
                 case 1 -> {
                     System.out.println("You selected level 1");
@@ -37,6 +43,7 @@ public class numguess {
                     System.out.println("You will have maximum of 7 attempts");
                     maxNumber = 50;
                     maxAttempts = 7;
+                    multiplier = 1;
                 }
                 case 2 -> {
                     System.out.println("You selected level 2");
@@ -44,6 +51,7 @@ public class numguess {
                     System.out.println("You will have maximum of 10 attempts");
                     maxNumber = 100;
                     maxAttempts = 10;
+                    multiplier = 2;
                 }
                 case 3 -> {
                     System.out.println("You selected level 3");
@@ -51,12 +59,14 @@ public class numguess {
                     System.out.println("You will have maximum of 15 attempts");
                     maxNumber = 200;
                     maxAttempts = 15;
+                    multiplier = 3;
                 }
                 default -> {
                     System.out.println("Invalid choice! level 2 will be seleted by default");
                     System.out.println("The numbers will range from 1-100");
                     maxNumber = 100;
                     maxAttempts = 10;
+                    multiplier = 2;
                 }
 
             }
@@ -68,7 +78,7 @@ public class numguess {
             System.out.println("The computer has selected the number");
 
             do {
-                System.out.print("Enter your guess : ");
+                System.out.print("Enter your guess(Attempts Left: " + (maxAttempts - attempts) +"): ");
                 guess = scanner.nextInt();
                 attempts++;
 
@@ -79,15 +89,25 @@ public class numguess {
                 } else {
                     System.out.println("Correct ! You guessed the right number");
                     System.out.println("Number of Attempts: " + attempts);
+                     score = ((maxAttempts-attempts)+1)*10*multiplier;
+                    System.out.println("Your score is: " + score);
+                    totalScore += score;
+                    if(score > highScore){
+                        highScore = score;
+                    }
                 }
             } while (guess != computerChoice && attempts < maxAttempts);
-            if (guess != computerChoice && attempts < maxAttempts) {
+            if (guess != computerChoice && attempts == maxAttempts) {
                 System.out.println("You ran out of attempts");
                 System.out.println("The correct answer was: " + computerChoice);
+                score = 0;
+                System.out.println("Your score is : " + score);
             }
             System.out.print("Do you want to play again(true/false) :");
             choice = scanner.nextBoolean();
             if (choice == false) {
+                System.out.println("Your highest score was : " + highScore);
+                System.out.println("Your total score is : " + totalScore);
                 System.out.println("Game Over");
             }
 
