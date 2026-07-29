@@ -1,13 +1,36 @@
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Random;
 import java.util.Scanner;
+import javax.imageio.IIOException;
 
 public class Hangman {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
 
         // Java Hangman Game
-        String word = "pizza";
+        String filePath = "words.txt";
+        ArrayList<String> words = new ArrayList<>();
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                words.add(line.trim());
+            }
+
+        } catch (FileNotFoundException e) {
+            System.out.println("File not found!");
+        } catch (IIOException e) {
+            System.out.println("Something went wrong!");
+        }
+
+        Random random = new Random();
+        String word = words.get(random.nextInt(words.size()));
+
         int wrongGuess = 0;
 
         Scanner sc = new Scanner(System.in);
@@ -59,6 +82,7 @@ public class Hangman {
         }
 
         sc.close();
+
     }
 
     static String getHangmanArt(int wrongGuess) {
