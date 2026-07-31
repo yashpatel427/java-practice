@@ -26,6 +26,6 @@ public class Timertsk{
             }
         };
 
-        timer.schedule(task, 1000, 1000);
+        timer.schedule(task, 1000, 1000);  // (task, delay, period between execution of task)
     }
 }
