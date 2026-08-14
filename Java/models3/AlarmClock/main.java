@@ -13,6 +13,7 @@ public class main {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
 
         LocalTime alarTime = null;
+        String filepath = "C:\\Users\\yp932\\OneDrive\\Desktop\\audio.wav";
 
         while (alarTime == null) {
             try {
@@ -27,10 +28,9 @@ public class main {
             }
         }
 
-        Alarmclk alarmclk = new Alarmclk(alarTime);
+        Alarmclk alarmclk = new Alarmclk(alarTime, filepath, scanner);
         Thread alarmThread = new Thread(alarmclk);
         alarmThread.start();
 
-        scanner.close();
     }
 }
