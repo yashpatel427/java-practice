@@ -16,7 +16,7 @@ public class main {
         Menu using switch
          */
         double balance = 0;
-        int pin = 1234;
+        String pin = "1234";
         int choice;
         boolean isRunning = true;
         int Attempts = 0;
@@ -29,8 +29,8 @@ public class main {
 
             while (Attempts < 3) {
                 System.out.print("Enter your 4 digit pin: ");
-                int userPin = scanner.nextInt();
-                if (userPin == pin) {
+                String userPin = scanner.nextLine();
+                if (userPin.length() == 4 && userPin.equals(pin)) {
 
                     boolean menuRunning = true;
                     while (menuRunning) {
@@ -62,7 +62,13 @@ public class main {
                     break;
                 } else {
                     Attempts++;
-                    System.out.println("Incorrect pin! Please try again");
+                    
+                    if(userPin.length() != 4){
+                        System.out.println("Please enter a 4 digit pin");
+                    } else {
+                        System.out.println("Incorrect pin! Please try again");
+                    }
+
                 }
             }
             if (Attempts == 3) {
