@@ -1,6 +1,4 @@
 
-
-
 public class Customer {
 
     private int customerId;
@@ -49,7 +47,7 @@ public class Customer {
         this.email = email;
     }
 
-    public void displayInfo(){
+    public void displayInfo() {
         System.out.println("Customer Id: " + customerId);
         System.out.println("Name: " + name);
         System.out.println("Phone Number: " + phoneNum);

@@ -1,3 +1,119 @@
-public class BankAccount{
-    
+
+import java.util.ArrayList;
+import java.util.Scanner;
+
+public class BankAccount {
+
+    private int bankAccountNum;
+    private double balance;
+    private Customer customer;
+    private String accountType;
+    private ArrayList<String> transactions;
+
+    public BankAccount(int bankAccountNum, double balance, Customer customer, String accountType) {
+        this.bankAccountNum = bankAccountNum;
+        this.balance = balance;
+        this.customer = customer;
+        this.accountType = accountType;
+        this.transactions = new ArrayList<>();
+    }
+
+    public int getBankAccountNum() {
+        return bankAccountNum;
+    }
+
+    public double getBalance() {
+        return balance;
+    }
+
+    public Customer getCustomer() {
+        return customer;
+    }
+
+    public String getAccountType() {
+        return accountType;
+    }
+
+    public void setBankAccountNum(int bankAccountNum) {
+        this.bankAccountNum = bankAccountNum;
+    }
+
+    public void setBalance(double balance) {
+        this.balance = balance;
+    }
+
+    public void setAccountType(String accountType) {
+        this.accountType = accountType;
+    }
+
+    public void deposit(Scanner scanner) {
+        double amount;
+        System.out.print("Enter the amount to deposit in Account number " + bankAccountNum + ": ");
+        amount = scanner.nextDouble();
+
+        if (amount > 0) {
+            balance += amount;
+            System.out.println("Amount deposited successfully in Account number " + bankAccountNum);
+            System.out.println("Balance: " + balance);
+            transactions.add("Deposit: +" + amount);
+        }
+    }
+
+    public void withdraw(Scanner scanner) {
+        double amount;
+        System.out.print("Enter amount to withdraw from Account number " + bankAccountNum + ": ");
+        amount = scanner.nextDouble();
+
+        if (amount <= 0) {
+            System.out.println("Amount to withdraw can not be negative or zero");
+        } else if (amount > balance) {
+            System.out.println("Insufficient Balance.");
+        } else {
+            balance -= amount;
+            System.out.println("Amount withdrawn successfully withdrawn from " + bankAccountNum);
+            System.out.println("Balance: " + balance);
+            transactions.add("Withdrawal: -" + amount);
+
+        }
+    }
+
+    public void displayInfo() {
+        System.out.println("Account Number: " + getBankAccountNum());
+        System.out.println("Balance: " + getBalance());
+        System.out.println("Account Type: " + getAccountType());
+        System.out.println("*Customer Details*");
+        getCustomer().displayInfo();
+    }
+
+    public void checkBalance() {
+        System.out.println("Current Balance: " + getBalance());
+    }
+
+    public void transfer(BankAccount receiver, Scanner scanner) {
+
+        System.out.print("Enter the amount to transfer: ");
+        double amount = scanner.nextDouble();
+
+        if (amount <= 0) {
+            System.out.println("Amount to transfer has to be greater than zero");
+        } else if (amount > balance) {
+            System.out.println("Insufficient Balance");
+        } else {
+            balance -= amount;
+            receiver.balance += amount;
+            transactions.add("Transfer to account " + receiver.bankAccountNum + ": -" + amount);
+            receiver.transactions.add("Transferred from Account " + bankAccountNum + ": +" + amount);
+            System.out.println("Amount successfully transferrd");
+        }
+    }
+
+    public void displayTransactions() {
+        System.out.println("*Transaction History of " + getCustomer().getName());
+
+        for (String transaction : transactions) {
+            System.out.println(transaction);
+        }
+        System.out.println("Current Blance: " + balance);
+    }
+
 }
