@@ -78,11 +78,13 @@ public class BankAccount {
     }
 
     public void displayInfo() {
-        System.out.println("Account Number: " + getBankAccountNum());
-        System.out.println("Balance: " + getBalance());
-        System.out.println("Account Type: " + getAccountType());
-        System.out.println("*Customer Details*");
+        System.out.println("*****************************");
+        System.out.println("|Account Number: " + getBankAccountNum() + "        |");
+        System.out.println("|Balance: " + getBalance() + "            |");
+        System.out.println("|Account Type: " + getAccountType() + "      |");
+        System.out.println("|*Customer Details*         |");
         getCustomer().displayInfo();
+        System.out.println("*****************************");
     }
 
     public void checkBalance() {

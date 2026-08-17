@@ -48,9 +48,9 @@ public class Customer {
     }
 
     public void displayInfo() {
-        System.out.println("Customer Id: " + customerId);
-        System.out.println("Name: " + name);
-        System.out.println("Phone Number: " + phoneNum);
-        System.out.println("Email: " + email);
+        System.out.println("|Customer Id: " + customerId + "             |");
+        System.out.println("|Name: " + name + "                 |");
+        System.out.println("|Phone Number: " + phoneNum + "   |");
+        System.out.println("|Email: " + email + "   |");
     }
 }
