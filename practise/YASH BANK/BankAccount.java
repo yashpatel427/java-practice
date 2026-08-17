@@ -8,13 +8,15 @@ public class BankAccount {
     private double balance;
     private Customer customer;
     private String accountType;
+    private String pin;
     private ArrayList<String> transactions;
 
-    public BankAccount(int bankAccountNum, double balance, Customer customer, String accountType) {
+    public BankAccount(int bankAccountNum, double balance, Customer customer, String accountType, String pin) {
         this.bankAccountNum = bankAccountNum;
         this.balance = balance;
         this.customer = customer;
         this.accountType = accountType;
+        this.pin = pin;
         this.transactions = new ArrayList<>();
     }
 
@@ -34,6 +36,10 @@ public class BankAccount {
         return accountType;
     }
 
+    public String getPin() {
+        return pin;
+    }
+
     public void setBankAccountNum(int bankAccountNum) {
         this.bankAccountNum = bankAccountNum;
     }
@@ -46,17 +52,36 @@ public class BankAccount {
         this.accountType = accountType;
     }
 
+    public void setPin(String pin) {
+        this.pin = pin;
+    }
+
     public void deposit(Scanner scanner) {
         double amount;
-        System.out.print("Enter the amount to deposit in Account number " + bankAccountNum + ": ");
-        amount = scanner.nextDouble();
 
-        if (amount > 0) {
-            balance += amount;
-            System.out.println("Amount deposited successfully in Account number " + bankAccountNum);
-            System.out.println("Balance: " + balance);
-            transactions.add("Deposit: +" + amount);
+        while (true) {
+            System.out.print("Enter the amount to deposit in Account number " + bankAccountNum + ": ");
+
+            if (!scanner.hasNextDouble()) {
+                System.out.println("Amount must be in numbers.");
+                scanner.next();
+                continue;
+            }
+
+            amount = scanner.nextDouble();
+
+            if (amount <= 0) {
+                System.out.println("Amount must be greater than zero.");
+                continue;
+            }
+            break;
         }
+
+        balance += amount;
+        System.out.println("Amount deposited successfully in Account number " + bankAccountNum);
+        System.out.println("Balance: " + balance);
+        transactions.add("Deposit: +" + amount);
+
     }
 
     public void withdraw(Scanner scanner) {
@@ -116,6 +141,10 @@ public class BankAccount {
             System.out.println(transaction);
         }
         System.out.println("Current Blance: " + balance);
+    }
+
+    public boolean verifyPin(String enteredPin) {
+        return pin.equals(enteredPin);
     }
 
 }
