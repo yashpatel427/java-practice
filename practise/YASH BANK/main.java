@@ -11,9 +11,9 @@ public class main {
 
         Customer customer1 = new Customer(1, "Yash", "1325752456", "yash@123gmail.com");
         Customer customer2 = new Customer(2, "Vivek", "1324576821", "vivek@124gmail.com");
-        String pin1 = createPin(scanner, 101);
+        String pin1 = BankAccount.createPin(scanner, 101);
         BankAccount bankAccount1 = new BankAccount(101, 2000, customer1, "Savings", pin1);
-        String pin2 = createPin(scanner, 102);
+        String pin2 = BankAccount.createPin(scanner, 102);
         BankAccount bankAccount2 = new BankAccount(102, 3000, customer2, "Current", pin2);
 
         ArrayList<BankAccount> accounts = new ArrayList<>();
@@ -78,7 +78,8 @@ public class main {
                         System.out.println("|4.Withdraw Money       |");
                         System.out.println("|5.Transfer Money       |");
                         System.out.println("|6.Transaction History  |");
-                        System.out.println("|7.Exit                 |");
+                        System.out.println("|7.Create new Account   |");
+                        System.out.println("|8.Exit                 |");
                         System.out.println("*************************");
                         System.out.print("Enter your choice: ");
                         if (scanner.hasNextInt()) {
@@ -95,35 +96,52 @@ public class main {
                                 case 4 ->
                                     selectedAccount.withdraw(scanner);
                                 case 5 -> {
-                                    System.out.print("Enter the receivers account number: ");
-                                    int receiverNum = scanner.nextInt();
-
                                     BankAccount receiver = null;
 
-                                    for (BankAccount account : accounts) {
-                                        if (account.getBankAccountNum() == receiverNum) {
-                                            receiver = account;
-                                            break;
+                                    while (receiver == null) {
+                                        System.out.print("Enter the receivers account number: ");
+
+                                        while (!scanner.hasNextInt()) {
+                                            System.out.println("Account number must be in numbers.");
+                                            scanner.next();
+                                            System.out.print("Enter the receivers account number again: ");
+                                        }
+                                        int receiverNum = scanner.nextInt();
+
+                                        for (BankAccount account : accounts) {
+                                            if (account.getBankAccountNum() == receiverNum) {
+                                                receiver = account;
+                                                break;
+                                            }
+                                        }
+                                        if (receiver == null) {
+                                            System.out.println("Account not Found! Please try Again");
+                                        } else if (receiver == selectedAccount) {
+                                            System.out.println("You can not Transfer money to your own Account!");
+                                            receiver = null;
                                         }
                                     }
-                                    if (receiver == null) {
-                                        System.out.println("Account not Found!");
-                                    } else if (receiver == selectedAccount) {
-                                        System.out.println("You can not Transfer money to your own Account!");
-                                    } else {
-                                        System.out.println("Account Found!");
-                                        selectedAccount.transfer(receiver, scanner);
-                                    }
+
+                                    System.out.println("Account Found!");
+                                    selectedAccount.transfer(receiver, scanner);
                                 }
                                 case 6 ->
                                     selectedAccount.displayTransactions();
-                                case 7 ->
+                                case 7 -> {
+                                    Customer customer = Customer.createCustomer(scanner);
+                                    BankAccount newAccount = BankAccount.createBankAccount(scanner, customer, accounts);
+
+                                    accounts.add(newAccount);
+                                    System.out.println("Account Created Successfully!");
+                                    System.out.println("Total Accounts: " + accounts.size());
+                                }
+                                case 8 ->
                                     isRunning = false;
                                 default ->
                                     System.out.println("Invalid Choice!");
                             }
                         } else {
-                            System.out.println("Please enter a number of your choice.");
+                            System.out.println("Please enter a number of your choice: ");
                             scanner.next();
                         }
                     }
@@ -131,19 +149,5 @@ public class main {
             }
         }
         scanner.close();
-    }
-
-    public static String createPin(Scanner scanner, int accountNum) {
-
-        System.out.print("Create a 4-Digit pin for Account number " + accountNum + ": ");
-        String pin = scanner.nextLine();
-
-        while (!pin.matches("\\d{4}")) {
-
-            System.out.println("Pin must be exactly 4 digit.");
-            System.out.print("Enter pin again: ");
-            pin = scanner.nextLine();
-        }
-        return pin;
     }
 }

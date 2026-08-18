@@ -1,4 +1,7 @@
 
+import java.util.Scanner;
+
+
 public class Customer {
 
     private int customerId;
@@ -52,5 +55,21 @@ public class Customer {
         System.out.println("|Name: " + name + "                 |");
         System.out.println("|Phone Number: " + phoneNum + "   |");
         System.out.println("|Email: " + email + "   |");
+    }
+
+    public static Customer createCustomer(Scanner scanner){
+        System.out.print("Enter Customer ID: ");
+        int customerID = scanner.nextInt();
+
+        scanner.nextLine();
+
+        System.out.print("Enter your Name: ");
+        String name = scanner.nextLine();
+        System.out.print("Enter your Phone Number: ");
+        String phoneNum = scanner.nextLine();
+        System.out.print("Enter your Email: ");
+        String email = scanner.nextLine();
+
+        return new Customer(customerID, name, phoneNum, email);
     }
 }
