@@ -106,14 +106,37 @@ public class BankAccount {
             }
         }
         scanner.nextLine();
-        System.out.print("Enter your Initial Balance: ");
-        double balance = scanner.nextDouble();
+        double balance;
 
+        while (true) {
+            System.out.print("Enter your Initial Balance: ");
+            if (!scanner.hasNextDouble()) {
+                System.out.println("Amount must be in numbers.");
+                scanner.next();
+                continue;
+            }
+            balance = scanner.nextDouble();
+
+            if (balance < 0) {
+                System.out.println("Initial balance can not be Negative.");
+                continue;
+            }
+            break;
+        }
         scanner.nextLine();
 
-        System.out.print("Enter Account Type(Current/Savings): ");
-        String accountType = scanner.nextLine();
+        String accountType = null;
+        boolean validType = false;
 
+        while (!validType) {
+            System.out.print("Enter Account Type(Current/Savings): ");
+            accountType = scanner.nextLine();
+            switch(accountType.toLowerCase()){
+                case "current", "savings" -> validType = true;
+            default -> System.out.println("Invalid Account Type! Please enter Current or Savings.");
+            }
+
+        }
         String pin = createPin(scanner, accountNum);
 
         return new BankAccount(accountNum, balance, customer, accountType, pin);
@@ -151,10 +174,10 @@ public class BankAccount {
 
     public void displayInfo() {
         System.out.println("*****************************");
-        System.out.println("|Account Number: " + getBankAccountNum() + "        |");
-        System.out.println("|Balance: " + getBalance() + "            |");
-        System.out.println("|Account Type: " + getAccountType() + "      |");
-        System.out.println("|*Customer Details*         |");
+        System.out.println("Account Number: " + getBankAccountNum() + "        ");
+        System.out.println("Balance: " + getBalance() + "            ");
+        System.out.println("Account Type: " + getAccountType() + "      ");
+        System.out.println("*Customer Details*         ");
         getCustomer().displayInfo();
         System.out.println("*****************************");
     }
