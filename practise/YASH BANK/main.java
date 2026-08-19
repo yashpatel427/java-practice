@@ -29,7 +29,8 @@ public class main {
             System.out.println("********YASH BANK********");
             System.out.println("1. Login");
             System.out.println("2. Create new Account");
-            System.out.println("3. Exit");
+            System.out.println("3. Display Total Accounts");
+            System.out.println("4. Exit");
             System.out.println("*************************");
 
             int choice = getIntInput(scanner, "Enter your choice: ");
@@ -44,16 +45,21 @@ public class main {
                 }
                 case 2 -> {
                     //create new account
-                    Customer customer = Customer.createCustomer(scanner, customers);
+                    scanner.nextLine();
+                    Customer customer = Customer.createCustomer(scanner, generateCustomerID(customers));
                     customers.add(customer);
 
                     BankAccount newAccount = BankAccount.createBankAccount(scanner, customer, accounts);
                     accounts.add(newAccount);
 
-                    System.out.println("Account Created Successfully!");
+                    System.out.println("******Account Created Successfully!******");
+                    newAccount.displayInfo();
+                    System.out.println("*****************************************");
                     System.out.println("Total Accounts: " + accounts.size());
                 }
-                case 3 -> {
+                case 3 ->
+                    dispalyTotalAccounts(accounts);
+                case 4 -> {
                     Running = false;
                     System.out.println("Thank you for using our Bank.");
                 }
@@ -168,7 +174,7 @@ public class main {
 
     public static int getIntInput(Scanner scanner, String message) {
         while (true) {
-            System.out.println(message);
+            System.out.print(message);
 
             if (scanner.hasNextInt()) {
                 return scanner.nextInt();
@@ -178,15 +184,23 @@ public class main {
         }
     }
 
-    public static double getDoubleInput(Scanner scanner, String message){
-        while(true){
-            System.out.println(message);
+    public static double getDoubleInput(Scanner scanner, String message) {
+        while (true) {
+            System.out.print(message);
 
-            if(scanner.hasNextDouble()){
+            if (scanner.hasNextDouble()) {
                 return scanner.nextDouble();
             }
             System.out.println("Please enter a valid amount!");
             scanner.next();
         }
+    }
+
+    public static void dispalyTotalAccounts(ArrayList<BankAccount> accounts) {
+        System.out.println("Total Accounts: " + accounts.size());
+    }
+
+    public static int generateCustomerID(ArrayList<Customer> customers){
+        return customers.size() + 1;
     }
 }

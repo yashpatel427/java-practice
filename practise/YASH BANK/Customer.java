@@ -1,5 +1,4 @@
 
-import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Customer {
@@ -57,28 +56,7 @@ public class Customer {
         System.out.println("Email: " + email + "   ");
     }
 
-    public static Customer createCustomer(Scanner scanner, ArrayList<Customer> customers) {
-        int customerID;
-
-        while (true) {
-            System.out.print("Enter Customer ID: ");
-            customerID = scanner.nextInt();
-
-            boolean exists = false;
-
-            for (Customer customer : customers) {
-                if (customer.getCustomerId() == customerID) {
-                    exists = true;
-                    break;
-                }
-            }
-            if (exists) {
-                System.out.println("Customer ID already exists. Please enter a new ID.");
-            } else {
-                break;
-            }
-        }
-        scanner.nextLine();
+    public static Customer createCustomer(Scanner scanner, int customerID) {
 
         String name;
         while (true) {

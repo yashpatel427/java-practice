@@ -60,27 +60,18 @@ public class BankAccount {
         double amount;
 
         while (true) {
-            System.out.print("Enter the amount to deposit in Account number " + bankAccountNum + ": ");
-
-            if (!scanner.hasNextDouble()) {
-                System.out.println("Amount must be in numbers.");
-                scanner.next();
-                continue;
-            }
-
-            amount = scanner.nextDouble();
+            amount = main.getDoubleInput(scanner, "Enter the amount to deposit in number " + bankAccountNum + ": ");
 
             if (amount <= 0) {
                 System.out.println("Amount must be greater than zero.");
-                continue;
+            } else {
+                balance += amount;
+                System.out.println("Amount deposited successfully in Account number " + bankAccountNum);
+                System.out.println("Balance: " + balance);
+                transactions.add("Deposit: +" + amount);
+                break;
             }
-            break;
         }
-
-        balance += amount;
-        System.out.println("Amount deposited successfully in Account number " + bankAccountNum);
-        System.out.println("Balance: " + balance);
-        transactions.add("Deposit: +" + amount);
 
     }
 
@@ -131,9 +122,11 @@ public class BankAccount {
         while (!validType) {
             System.out.print("Enter Account Type(Current/Savings): ");
             accountType = scanner.nextLine();
-            switch(accountType.toLowerCase()){
-                case "current", "savings" -> validType = true;
-            default -> System.out.println("Invalid Account Type! Please enter Current or Savings.");
+            switch (accountType.toLowerCase()) {
+                case "current", "savings" ->
+                    validType = true;
+                default ->
+                    System.out.println("Invalid Account Type! Please enter Current or Savings.");
             }
 
         }
@@ -148,14 +141,7 @@ public class BankAccount {
 
         while (true) {
 
-            System.out.print("Enter amount to withdraw from Account number " + bankAccountNum + ": ");
-
-            if (!scanner.hasNextDouble()) {
-                System.out.println("Amount must be in numbers.");
-                scanner.next();
-                continue;
-            }
-            amount = scanner.nextDouble();
+            amount = main.getDoubleInput(scanner, "Enter the amount to withdraw from " + bankAccountNum + ": ");
 
             if (amount <= 0) {
                 System.out.println("Amount to withdraw can not be negative or zero");
@@ -174,11 +160,13 @@ public class BankAccount {
 
     public void displayInfo() {
         System.out.println("*****************************");
+
+        getCustomer().displayInfo();
+        System.out.println();
         System.out.println("Account Number: " + getBankAccountNum() + "        ");
         System.out.println("Balance: " + getBalance() + "            ");
         System.out.println("Account Type: " + getAccountType() + "      ");
-        System.out.println("*Customer Details*         ");
-        getCustomer().displayInfo();
+        
         System.out.println("*****************************");
     }
 
@@ -191,14 +179,7 @@ public class BankAccount {
 
         while (true) {
 
-            System.out.print("Enter the amount to transfer: ");
-
-            if (!scanner.hasNextDouble()) {
-                System.out.println("Amount must be in numbers.");
-                scanner.next();
-                continue;
-            }
-            amount = scanner.nextDouble();
+            amount = main.getDoubleInput(scanner, "Enter the amount to transfer " + bankAccountNum + ": ");
 
             if (amount <= 0) {
                 System.out.println("Amount to transfer has to be greater than zero");
@@ -218,12 +199,14 @@ public class BankAccount {
     }
 
     public void displayTransactions() {
-        System.out.println("*Transaction History of " + getCustomer().getName());
+        System.out.println("***********************************");
+        System.out.println("*Transaction History of " + getCustomer().getName() + "*");
 
         for (String transaction : transactions) {
             System.out.println(transaction);
         }
         System.out.println("Current Blance: " + balance);
+        System.out.println("***********************************");
     }
 
     public static String createPin(Scanner scanner, int accountNum) {
