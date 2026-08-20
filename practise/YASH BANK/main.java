@@ -46,7 +46,9 @@ public class main {
                 case 2 -> {
                     //create new account
                     scanner.nextLine();
-                    Customer customer = Customer.createCustomer(scanner, generateCustomerID(customers));
+                    int customerID =generateCustomerID(customers);
+                    System.out.println("Your customer ID is: " + customerID);
+                    Customer customer = Customer.createCustomer(scanner, customerID);
                     customers.add(customer);
 
                     BankAccount newAccount = BankAccount.createBankAccount(scanner, customer, accounts);
@@ -202,5 +204,9 @@ public class main {
 
     public static int generateCustomerID(ArrayList<Customer> customers){
         return customers.size() + 1;
+    }
+
+    public static int generateAccountNum(ArrayList<BankAccount> accounts) {
+        return 100 + accounts.size() + 1;
     }
 }

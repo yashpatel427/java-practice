@@ -78,35 +78,12 @@ public class BankAccount {
     public static BankAccount createBankAccount(Scanner scanner, Customer customer, ArrayList<BankAccount> accounts) {
         int accountNum;
 
-        while (true) {
-            System.out.print("Enter Account number: ");
-            accountNum = scanner.nextInt();
-
-            boolean exists = false;
-
-            for (BankAccount account : accounts) {
-                if (account.getBankAccountNum() == accountNum) {
-                    exists = true;
-                    break;
-                }
-            }
-            if (exists) {
-                System.out.println("Account already exists! Please enter a new account number.");
-            } else {
-                break;
-            }
-        }
-        scanner.nextLine();
-        double balance;
+        accountNum = main.generateAccountNum(accounts);
+        System.out.println("Your Account number is: " + accountNum);
+        double balance = 0;
 
         while (true) {
-            System.out.print("Enter your Initial Balance: ");
-            if (!scanner.hasNextDouble()) {
-                System.out.println("Amount must be in numbers.");
-                scanner.next();
-                continue;
-            }
-            balance = scanner.nextDouble();
+            balance = main.getDoubleInput(scanner, "Enter your Initial Blance: ");
 
             if (balance < 0) {
                 System.out.println("Initial balance can not be Negative.");
