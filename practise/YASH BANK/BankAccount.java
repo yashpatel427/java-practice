@@ -143,7 +143,7 @@ public class BankAccount {
         System.out.println("Account Number: " + getBankAccountNum() + "        ");
         System.out.println("Balance: " + getBalance() + "            ");
         System.out.println("Account Type: " + getAccountType() + "      ");
-        
+
         System.out.println("*****************************");
     }
 
@@ -156,7 +156,7 @@ public class BankAccount {
 
         while (true) {
 
-            amount = main.getDoubleInput(scanner, "Enter the amount to transfer " + bankAccountNum + ": ");
+            amount = main.getDoubleInput(scanner, "Enter the amount to transfer from " + bankAccountNum + ": ");
 
             if (amount <= 0) {
                 System.out.println("Amount to transfer has to be greater than zero");
@@ -200,8 +200,53 @@ public class BankAccount {
         return pin;
     }
 
+    public void changePin(Scanner scanner) {
+        System.out.print("Enter your current pin: ");
+        String currentPin = scanner.nextLine();
+
+        if (!verifyPin(currentPin)) {
+            System.out.println("Incorrect current pin!");
+            return;
+        }
+        String newPin;
+        while (true) {
+            System.out.print("Enter your new 4-Digit PIN: ");
+            newPin = scanner.nextLine();
+
+            if (newPin.matches("\\d{4}")) {
+                break;
+            }
+            System.out.println("Pin must be exactly 4 digits.");
+        }
+        System.out.print("Confirm your new pin: ");
+        String confirmPin = scanner.nextLine();
+
+        if (!newPin.equals(confirmPin)) {
+            System.out.println("Pin's does not match. Pin was not changed.");
+            return;
+        }
+        if (newPin.equals(pin)) {
+            System.out.println("New pin can not be same as your previous pin.");
+            return;
+        }
+
+        pin = newPin;
+        System.out.println("Pin changed succeddfully.");
+    }
+
     public boolean verifyPin(String enteredPin) {
         return pin.equals(enteredPin);
+    }
+
+    public boolean deleteAccount(Scanner scanner) {
+        System.out.print("Are you sure you want to delete this account(yes/no): ");
+        String choice = scanner.nextLine();
+
+        if (choice.equalsIgnoreCase("yes")) {
+            return true;
+        }
+        System.out.println("Account deletion cancelled.");
+        return false;
     }
 
 }

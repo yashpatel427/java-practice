@@ -1,4 +1,5 @@
 
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Customer {
@@ -56,14 +57,14 @@ public class Customer {
         System.out.println("Email: " + email + "   ");
     }
 
-    public static Customer createCustomer(Scanner scanner, int customerID) {
+    public static Customer createCustomer(Scanner scanner, int customerID, ArrayList<Customer> customers) {
 
         String name;
         while (true) {
             System.out.print("Enter your Name: ");
             name = scanner.nextLine();
 
-            if(!name.trim().isEmpty()){
+            if (!name.trim().isEmpty()) {
                 break;
             }
             System.out.println("Name can not be empty.");
@@ -73,20 +74,30 @@ public class Customer {
         while (true) {
             System.out.print("Enter your Phone Number: ");
             phoneNum = scanner.nextLine();
-            if (phoneNum.matches("\\d{10}")) {
-                break;
+            if (!phoneNum.matches("\\d{10}")) {
+                System.out.println("Phone Number must be of exactly 10 Digits.");
+                continue;
             }
-            System.out.println("Phone Number must be of exactly 10 Digits.");
+            if (main.phoneExists(customers, phoneNum)) {
+                System.out.println("Phone number already exists! Please enter another phone number.");
+                continue;
+            }
+            break;
         }
 
         String email;
         while (true) {
             System.out.print("Enter your Email: ");
             email = scanner.nextLine();
-            if (email.matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$")) {
-                break;
+            if (!email.matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$")) {
+                System.out.println("Invalid Email! Please enter a valid Email.");
+                continue;
             }
-            System.out.println("Invalid Email! Please enter a valid Email.");
+            if (main.emailExists(customers, email)) {
+                System.out.println("Email Address already exists! Please enter another email.");
+                continue;
+            }
+            break;
         }
 
         return new Customer(customerID, name, phoneNum, email);

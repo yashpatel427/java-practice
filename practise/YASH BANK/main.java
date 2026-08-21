@@ -46,9 +46,9 @@ public class main {
                 case 2 -> {
                     //create new account
                     scanner.nextLine();
-                    int customerID =generateCustomerID(customers);
+                    int customerID = generateCustomerID(customers);
                     System.out.println("Your customer ID is: " + customerID);
-                    Customer customer = Customer.createCustomer(scanner, customerID);
+                    Customer customer = Customer.createCustomer(scanner, customerID, customers);
                     customers.add(customer);
 
                     BankAccount newAccount = BankAccount.createBankAccount(scanner, customer, accounts);
@@ -103,9 +103,16 @@ public class main {
 
                 authenticated = true;
                 System.out.println("Login successful!");
+                System.out.println("Welcome " + selectedAccount.getCustomer().getName() + ".");
             } else {
                 attempts++;
-                System.out.println("Incorrect Pin!");
+                int remaining = 3 - attempts;
+                if (remaining > 0) {
+                    System.out.println("Incorrect Pin!");
+                    System.out.println("Attempts remaining: " + remaining);
+                } else {
+                    System.out.println("Too many incorrect attempts.");
+                }
             }
         }
         if (!authenticated) {
@@ -127,7 +134,9 @@ public class main {
             System.out.println("4.Withdraw Money       ");
             System.out.println("5.Transfer Money       ");
             System.out.println("6.Transaction History  ");
-            System.out.println("7.Exit                 ");
+            System.out.println("7.Change Pin           ");
+            System.out.println("8.Delete Account       ");
+            System.out.println("9.Logout               ");
             System.out.println("*************************");
 
             int menuchoice = getIntInput(scanner, "Enter your choice: ");
@@ -166,8 +175,25 @@ public class main {
                 }
                 case 6 ->
                     selectedAccount.displayTransactions();
-                case 7 ->
+                case 7 -> {
+                    scanner.nextLine();
+                    selectedAccount.changePin(scanner);
+                }
+                case 8 ->{
+                    scanner.nextLine();
+
+                    boolean deleted = selectedAccount.deleteAccount(scanner);
+
+                    if(deleted){
+                        accounts.remove(selectedAccount);
+                        System.out.println("Account deleted successfully.");
+                        isRunning = false;
+                    }
+                }
+                case 9 -> {
                     isRunning = false;
+                    System.out.println("Logged out successfully.");
+                }
                 default ->
                     System.out.println("Invalid Choice!");
             }
@@ -181,7 +207,7 @@ public class main {
             if (scanner.hasNextInt()) {
                 return scanner.nextInt();
             }
-            System.out.print("Please enter a valid number.");
+            System.out.println("Please enter a valid number.");
             scanner.next();
         }
     }
@@ -202,11 +228,29 @@ public class main {
         System.out.println("Total Accounts: " + accounts.size());
     }
 
-    public static int generateCustomerID(ArrayList<Customer> customers){
+    public static int generateCustomerID(ArrayList<Customer> customers) {
         return customers.size() + 1;
     }
 
     public static int generateAccountNum(ArrayList<BankAccount> accounts) {
         return 100 + accounts.size() + 1;
+    }
+
+    public static boolean phoneExists(ArrayList<Customer> customers, String phoneNum) {
+        for (Customer customer : customers) {
+            if (customer.getPhoneNum().equals(phoneNum)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static boolean emailExists(ArrayList<Customer> customers, String email) {
+        for (Customer customer : customers) {
+            if (customer.getEmail().equalsIgnoreCase(email)) {
+                return true;
+            }
+        }
+        return false;
     }
 }
