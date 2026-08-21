@@ -8,6 +8,9 @@ public class main {
         // JAVA BANK PROGRAM
 
         Scanner scanner = new Scanner(System.in);
+        BankAccount.createDataFile();
+        BankAccount.writeData();
+        BankAccount.readData();
 
         Customer customer1 = new Customer(1, "Yash", "1325752456", "yash@123gmail.com");
         Customer customer2 = new Customer(2, "Vivek", "1324576821", "vivek@124gmail.com");
@@ -40,7 +43,7 @@ public class main {
                     //login
                     BankAccount selectedAccount = login(scanner, accounts);
                     if (selectedAccount != null) {
-                        bankMenu(scanner, selectedAccount, accounts);
+                        bankMenu(scanner, selectedAccount, accounts, customers);
                     }
                 }
                 case 2 -> {
@@ -123,7 +126,7 @@ public class main {
         return selectedAccount;
     }
 
-    public static void bankMenu(Scanner scanner, BankAccount selectedAccount, ArrayList<BankAccount> accounts) {
+    public static void bankMenu(Scanner scanner, BankAccount selectedAccount, ArrayList<BankAccount> accounts, ArrayList<Customer> customers) {
         boolean isRunning = true;
 
         while (isRunning) {
@@ -185,6 +188,7 @@ public class main {
                     boolean deleted = selectedAccount.deleteAccount(scanner);
 
                     if(deleted){
+                        customers.remove(selectedAccount.getCustomer());
                         accounts.remove(selectedAccount);
                         System.out.println("Account deleted successfully.");
                         isRunning = false;
@@ -229,11 +233,41 @@ public class main {
     }
 
     public static int generateCustomerID(ArrayList<Customer> customers) {
-        return customers.size() + 1;
+        int customerID = 1;
+
+        while (true) { 
+            boolean exists = false;
+
+            for(Customer customer : customers){
+                if(customer.getCustomerId() == customerID){
+                    exists = true;
+                    break;
+                }
+            }
+            if(!exists){
+                return customerID;
+            }
+            customerID++;
+        }
     }
 
     public static int generateAccountNum(ArrayList<BankAccount> accounts) {
-        return 100 + accounts.size() + 1;
+        int accountNum = 101;
+
+        while (true) { 
+            boolean exists = false;
+            
+            for(BankAccount account : accounts){
+                if(account.getBankAccountNum() == accountNum){
+                    exists = true;
+                    break;
+                }
+            }
+            if(!exists){
+                return accountNum;
+            }
+            accountNum++;
+        }
     }
 
     public static boolean phoneExists(ArrayList<Customer> customers, String phoneNum) {

@@ -1,4 +1,9 @@
 
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -10,6 +15,7 @@ public class BankAccount {
     private String accountType;
     private String pin;
     private ArrayList<String> transactions;
+    private static int transactionCounter = 1;
 
     public BankAccount(int bankAccountNum, double balance, Customer customer, String accountType, String pin) {
         this.bankAccountNum = bankAccountNum;
@@ -68,7 +74,8 @@ public class BankAccount {
                 balance += amount;
                 System.out.println("Amount deposited successfully in Account number " + bankAccountNum);
                 System.out.println("Balance: " + balance);
-                transactions.add("Deposit: +" + amount);
+                transactions.add("-> " + generateTransactionID() + "| Deposit: +" 
+                + amount + " | Balance: " + balance + " | " + getCurrentTime());
                 break;
             }
         }
@@ -132,7 +139,8 @@ public class BankAccount {
         balance -= amount;
         System.out.println("Amount withdrawn successfully from " + bankAccountNum);
         System.out.println("Balance: " + balance);
-        transactions.add("Withdrawal: -" + amount);
+        transactions.add("-> " + generateTransactionID() + "| Withdrawal: -" + amount +
+         " | Balance: " + balance + " | " + getCurrentTime());
     }
 
     public void displayInfo() {
@@ -140,15 +148,15 @@ public class BankAccount {
 
         getCustomer().displayInfo();
         System.out.println();
-        System.out.println("Account Number: " + getBankAccountNum() + "        ");
-        System.out.println("Balance: " + getBalance() + "            ");
-        System.out.println("Account Type: " + getAccountType() + "      ");
+        System.out.println("-> Account Number: " + getBankAccountNum() + "        ");
+        System.out.println("-> Balance: " + getBalance() + "            ");
+        System.out.println("-> Account Type: " + getAccountType() + "      ");
 
         System.out.println("*****************************");
     }
 
     public void checkBalance() {
-        System.out.println("Current Balance: " + getBalance());
+        System.out.println("-> Current Balance: " + getBalance());
     }
 
     public void transfer(BankAccount receiver, Scanner scanner) {
@@ -170,20 +178,26 @@ public class BankAccount {
         }
         balance -= amount;
         receiver.balance += amount;
-        transactions.add("Transfer to account " + receiver.bankAccountNum + ": -" + amount);
-        receiver.transactions.add("Transferred from Account " + bankAccountNum + ": +" + amount);
+        transactions.add("-> " + generateTransactionID() + "| Transfer to account "
+         + receiver.bankAccountNum + ": -" + amount + " | Balance: " + balance + " | " + getCurrentTime());
+        receiver.transactions.add("-> " + generateTransactionID() + "| Transferred from Account " 
+        + bankAccountNum + ": +" + amount + " | Balance: " + balance + " | " + getCurrentTime());
         System.out.println("Amount successfully transferred");
     }
 
     public void displayTransactions() {
-        System.out.println("***********************************");
+        System.out.println("***************************************************");
         System.out.println("*Transaction History of " + getCustomer().getName() + "*");
 
-        for (String transaction : transactions) {
-            System.out.println(transaction);
+        if (transactions.isEmpty()) {
+            System.out.println("-> NO Transaction yet.");
+        } else {
+            for (String transaction : transactions) {
+                System.out.println(transaction);
+            }
         }
-        System.out.println("Current Blance: " + balance);
-        System.out.println("***********************************");
+        System.out.println("-> Current Blance: " + balance);
+        System.out.println("***************************************************");
     }
 
     public static String createPin(Scanner scanner, int accountNum) {
@@ -248,5 +262,58 @@ public class BankAccount {
         System.out.println("Account deletion cancelled.");
         return false;
     }
+    
+    public String getCurrentTime(){
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
+        return LocalDateTime.now().format(formatter);
+    }
 
+    public static String generateTransactionID(){
+        return String.format("TXN%03d", transactionCounter++);
+    }
+
+    public static void createDataFile(){
+
+        File file = new File("YashBankData.txt");
+
+        try{
+            if(file.createNewFile()){
+                System.out.println("Data file created.");
+            } else{
+                System.out.println("Data file already exists.");
+            }
+        }catch(Exception e){
+            System.out.println("Error creating data file.");
+        }
+    }
+
+    public static void writeData(){
+        try {
+            FileWriter writer = new FileWriter("YashBankData.txt");
+
+            writer.write("YASH BANK DATA\n");
+            writer.write("This is a test.\n");
+
+            writer.close();
+
+            System.out.println("Data written successfully.");
+        } catch (Exception e) {
+            System.out.println("Error writting data.");
+        }
+    }
+
+    public static void readData(){
+        try {
+            FileReader reader = new FileReader("YashBankData.txt");
+
+            int character;
+
+            while ((character = reader.read()) != -1) { 
+                System.out.print((char) character);
+            }
+            reader.close();
+        } catch (Exception e) {
+            System.out.println("Error reading Data.");
+        }
+    }
 }
