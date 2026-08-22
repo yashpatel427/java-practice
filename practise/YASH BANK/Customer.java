@@ -16,7 +16,7 @@ public class Customer {
         this.email = email;
     }
 
-    public int getCustomerId() {
+    public int getCustomerID() {
         return customerId;
     }
 
@@ -32,7 +32,7 @@ public class Customer {
         return email;
     }
 
-    public void setCustomerId(int customerId) {
+    public void setCustomerID(int customerId) {
         if (customerId > 0) {
             this.customerId = customerId;
         }

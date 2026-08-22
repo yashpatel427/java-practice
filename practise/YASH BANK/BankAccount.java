@@ -1,5 +1,5 @@
 
-import java.io.File;
+import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.time.LocalDateTime;
@@ -74,8 +74,8 @@ public class BankAccount {
                 balance += amount;
                 System.out.println("Amount deposited successfully in Account number " + bankAccountNum);
                 System.out.println("Balance: " + balance);
-                transactions.add("-> " + generateTransactionID() + "| Deposit: +" 
-                + amount + " | Balance: " + balance + " | " + getCurrentTime());
+                transactions.add("-> " + generateTransactionID() + "| Deposit: +"
+                        + amount + " | Balance: " + balance + " | " + getCurrentTime());
                 break;
             }
         }
@@ -139,8 +139,8 @@ public class BankAccount {
         balance -= amount;
         System.out.println("Amount withdrawn successfully from " + bankAccountNum);
         System.out.println("Balance: " + balance);
-        transactions.add("-> " + generateTransactionID() + "| Withdrawal: -" + amount +
-         " | Balance: " + balance + " | " + getCurrentTime());
+        transactions.add("-> " + generateTransactionID() + "| Withdrawal: -" + amount
+                + " | Balance: " + balance + " | " + getCurrentTime());
     }
 
     public void displayInfo() {
@@ -179,9 +179,9 @@ public class BankAccount {
         balance -= amount;
         receiver.balance += amount;
         transactions.add("-> " + generateTransactionID() + "| Transfer to account "
-         + receiver.bankAccountNum + ": -" + amount + " | Balance: " + balance + " | " + getCurrentTime());
-        receiver.transactions.add("-> " + generateTransactionID() + "| Transferred from Account " 
-        + bankAccountNum + ": +" + amount + " | Balance: " + balance + " | " + getCurrentTime());
+                + receiver.bankAccountNum + ": -" + amount + " | Balance: " + balance + " | " + getCurrentTime());
+        receiver.transactions.add("-> " + generateTransactionID() + "| Transferred from Account "
+                + bankAccountNum + ": +" + amount + " | Balance: " + balance + " | " + getCurrentTime());
         System.out.println("Amount successfully transferred");
     }
 
@@ -262,58 +262,72 @@ public class BankAccount {
         System.out.println("Account deletion cancelled.");
         return false;
     }
-    
-    public String getCurrentTime(){
+
+    public String getCurrentTime() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
         return LocalDateTime.now().format(formatter);
     }
 
-    public static String generateTransactionID(){
+    public static String generateTransactionID() {
         return String.format("TXN%03d", transactionCounter++);
     }
 
-    public static void createDataFile(){
-
-        File file = new File("YashBankData.txt");
-
-        try{
-            if(file.createNewFile()){
-                System.out.println("Data file created.");
-            } else{
-                System.out.println("Data file already exists.");
-            }
-        }catch(Exception e){
-            System.out.println("Error creating data file.");
-        }
-    }
-
-    public static void writeData(){
+    public static void saveAccounts(ArrayList<BankAccount> accounts) {
         try {
             FileWriter writer = new FileWriter("YashBankData.txt");
 
-            writer.write("YASH BANK DATA\n");
-            writer.write("This is a test.\n");
-
+            for (BankAccount account : accounts) {
+                writer.write(account.toFileString() + "\n");
+            }
             writer.close();
-
-            System.out.println("Data written successfully.");
+            System.out.println("Bank data saved successfully.");
         } catch (Exception e) {
-            System.out.println("Error writting data.");
+            System.out.println("Error saving bank data.");
         }
     }
 
-    public static void readData(){
+    public static void loadAccounts(ArrayList<BankAccount> accounts, ArrayList<Customer> customers){
         try {
-            FileReader reader = new FileReader("YashBankData.txt");
+            BufferedReader reader = new BufferedReader(new FileReader("YashBankData.txt"));
 
-            int character;
+            String line;
 
-            while ((character = reader.read()) != -1) { 
-                System.out.print((char) character);
+            while((line = reader.readLine()) != null){
+                
+                String[] data = line.split("\\|");
+
+                int customerID = Integer.parseInt(data[0]);
+                String name = data[1];
+                String phoneNum = data[2];
+                String email = data[3];
+
+                int accountNum = Integer.parseInt(data[4]);
+                double balance = Double.parseDouble(data[5]);
+                String accountType = data[6];
+                String pin = data[7];
+
+                Customer customer = new Customer(customerID, name, phoneNum, email);
+                BankAccount account = new BankAccount(accountNum, balance, customer, accountType, pin);
+
+                customers.add(customer);
+                accounts.add(account);
             }
             reader.close();
+
         } catch (Exception e) {
-            System.out.println("Error reading Data.");
+            System.out.println("Error loading bank data.");
         }
+    }
+
+    public String toFileString() {
+        return customer.getCustomerID() + "|"
+                + customer.getName() + "|"
+                + customer.getPhoneNum() + "|"
+                + customer.getEmail() + "|"
+                + bankAccountNum + "|"
+                + balance + "|"
+                + accountType + "|"
+                + pin;
+
     }
 }

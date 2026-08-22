@@ -8,24 +8,11 @@ public class main {
         // JAVA BANK PROGRAM
 
         Scanner scanner = new Scanner(System.in);
-        BankAccount.createDataFile();
-        BankAccount.writeData();
-        BankAccount.readData();
-
-        Customer customer1 = new Customer(1, "Yash", "1325752456", "yash@123gmail.com");
-        Customer customer2 = new Customer(2, "Vivek", "1324576821", "vivek@124gmail.com");
-        String pin1 = BankAccount.createPin(scanner, 101);
-        BankAccount bankAccount1 = new BankAccount(101, 2000, customer1, "Savings", pin1);
-        String pin2 = BankAccount.createPin(scanner, 102);
-        BankAccount bankAccount2 = new BankAccount(102, 3000, customer2, "Current", pin2);
 
         ArrayList<Customer> customers = new ArrayList<>();
-        customers.add(customer1);
-        customers.add(customer2);
-
         ArrayList<BankAccount> accounts = new ArrayList<>();
-        accounts.add(bankAccount1);
-        accounts.add(bankAccount2);
+
+        BankAccount.loadAccounts(accounts, customers);
 
         boolean Running = true;
         while (Running) {
@@ -72,6 +59,8 @@ public class main {
                     System.out.println("Invalid Choice!");
             }
         }
+        BankAccount.saveAccounts(accounts);
+        BankAccount.loadAccounts(accounts, customers);
         scanner.close();
     }
 
@@ -126,7 +115,8 @@ public class main {
         return selectedAccount;
     }
 
-    public static void bankMenu(Scanner scanner, BankAccount selectedAccount, ArrayList<BankAccount> accounts, ArrayList<Customer> customers) {
+    public static void bankMenu(Scanner scanner, BankAccount selectedAccount,
+            ArrayList<BankAccount> accounts, ArrayList<Customer> customers) {
         boolean isRunning = true;
 
         while (isRunning) {
@@ -149,10 +139,14 @@ public class main {
                     selectedAccount.displayInfo();
                 case 2 ->
                     selectedAccount.checkBalance();
-                case 3 ->
+                case 3 -> {
                     selectedAccount.deposit(scanner);
-                case 4 ->
+                    BankAccount.saveAccounts(accounts);
+                }
+                case 4 ->{
                     selectedAccount.withdraw(scanner);
+                    BankAccount.saveAccounts(accounts);
+                }
                 case 5 -> {
                     BankAccount receiver = null;
 
@@ -175,19 +169,21 @@ public class main {
                     }
                     System.out.println("Account Found!");
                     selectedAccount.transfer(receiver, scanner);
+                    BankAccount.saveAccounts(accounts);
                 }
                 case 6 ->
                     selectedAccount.displayTransactions();
                 case 7 -> {
                     scanner.nextLine();
                     selectedAccount.changePin(scanner);
+                    BankAccount.saveAccounts(accounts);
                 }
-                case 8 ->{
+                case 8 -> {
                     scanner.nextLine();
 
                     boolean deleted = selectedAccount.deleteAccount(scanner);
 
-                    if(deleted){
+                    if (deleted) {
                         customers.remove(selectedAccount.getCustomer());
                         accounts.remove(selectedAccount);
                         System.out.println("Account deleted successfully.");
@@ -235,16 +231,16 @@ public class main {
     public static int generateCustomerID(ArrayList<Customer> customers) {
         int customerID = 1;
 
-        while (true) { 
+        while (true) {
             boolean exists = false;
 
-            for(Customer customer : customers){
-                if(customer.getCustomerId() == customerID){
+            for (Customer customer : customers) {
+                if (customer.getCustomerID() == customerID) {
                     exists = true;
                     break;
                 }
             }
-            if(!exists){
+            if (!exists) {
                 return customerID;
             }
             customerID++;
@@ -254,16 +250,16 @@ public class main {
     public static int generateAccountNum(ArrayList<BankAccount> accounts) {
         int accountNum = 101;
 
-        while (true) { 
+        while (true) {
             boolean exists = false;
-            
-            for(BankAccount account : accounts){
-                if(account.getBankAccountNum() == accountNum){
+
+            for (BankAccount account : accounts) {
+                if (account.getBankAccountNum() == accountNum) {
                     exists = true;
                     break;
                 }
             }
-            if(!exists){
+            if (!exists) {
                 return accountNum;
             }
             accountNum++;
