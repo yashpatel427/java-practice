@@ -32,12 +32,6 @@ public class Customer {
         return email;
     }
 
-    public void setCustomerID(int customerId) {
-        if (customerId > 0) {
-            this.customerId = customerId;
-        }
-    }
-
     public void setName(String name) {
         this.name = name;
     }

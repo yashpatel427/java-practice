@@ -43,24 +43,12 @@ public class BankAccount {
         return accountType;
     }
 
-    public String getPin() {
-        return pin;
-    }
-
     public void setBankAccountNum(int bankAccountNum) {
         this.bankAccountNum = bankAccountNum;
     }
 
-    public void setBalance(double balance) {
-        this.balance = balance;
-    }
-
     public void setAccountType(String accountType) {
         this.accountType = accountType;
-    }
-
-    public void setPin(String pin) {
-        this.pin = pin;
     }
 
     public boolean deposit(Scanner scanner) {
@@ -243,10 +231,6 @@ public class BankAccount {
 
         if (!newPin.equals(confirmPin)) {
             System.out.println("Pin's does not match. Pin was not changed.");
-            return false;
-        }
-        if (newPin.equals(pin)) {
-            System.out.println("New pin can not be same as your previous pin.");
             return false;
         }
 
