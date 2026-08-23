@@ -16,8 +16,8 @@ public class main {
         BankAccount.loadTransactions(accounts);
         BankAccount.loadTransactionCounter();
 
-        boolean Running = true;
-        while (Running) {
+        boolean running = true;
+        while (running) {
             System.out.println("********YASH BANK********");
             System.out.println("1. Login");
             System.out.println("2. Create new Account");
@@ -52,9 +52,9 @@ public class main {
                     System.out.println("Total Accounts: " + accounts.size());
                 }
                 case 3 ->
-                    dispalyTotalAccounts(accounts);
+                    displayTotalAccounts(accounts);
                 case 4 -> {
-                    Running = false;
+                    running = false;
                     System.out.println("Thank you for using our Bank.");
                 }
                 default ->
@@ -62,7 +62,7 @@ public class main {
             }
         }
         BankAccount.saveAccounts(accounts);
-        BankAccount.loadAccounts(accounts, customers);
+        BankAccount.saveTransaction(accounts);
         scanner.close();
     }
 
@@ -183,8 +183,9 @@ public class main {
                     selectedAccount.displayTransactions();
                 case 7 -> {
                     scanner.nextLine();
-                    selectedAccount.changePin(scanner);
-                    BankAccount.saveAccounts(accounts);
+                    if (selectedAccount.changePin(scanner)) {
+                        BankAccount.saveAccounts(accounts);
+                    }
                 }
                 case 8 -> {
                     scanner.nextLine();
@@ -195,7 +196,10 @@ public class main {
                         customers.remove(selectedAccount.getCustomer());
                         accounts.remove(selectedAccount);
                         BankAccount.saveAccounts(accounts);
+                        BankAccount.saveTransaction(accounts);
+
                         System.out.println("Account deleted successfully.");
+
                         isRunning = false;
                     }
                 }
@@ -233,7 +237,7 @@ public class main {
         }
     }
 
-    public static void dispalyTotalAccounts(ArrayList<BankAccount> accounts) {
+    public static void displayTotalAccounts(ArrayList<BankAccount> accounts) {
         System.out.println("Total Accounts: " + accounts.size());
     }
 

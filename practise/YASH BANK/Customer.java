@@ -78,7 +78,7 @@ public class Customer {
                 System.out.println("Phone Number must be of exactly 10 Digits.");
                 continue;
             }
-            if (main.phoneExists(customers, phoneNum)) {
+            if (Main.phoneExists(customers, phoneNum)) {
                 System.out.println("Phone number already exists! Please enter another phone number.");
                 continue;
             }
@@ -93,7 +93,7 @@ public class Customer {
                 System.out.println("Invalid Email! Please enter a valid Email.");
                 continue;
             }
-            if (main.emailExists(customers, email)) {
+            if (Main.emailExists(customers, email)) {
                 System.out.println("Email Address already exists! Please enter another email.");
                 continue;
             }

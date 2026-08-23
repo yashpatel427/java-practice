@@ -1,3 +1,0 @@
-1|Yash|1236547956|yash@patel|101|5350.0|savings|0804
-2|vivek|4562128574|vivek@varia|102|4490.0|current|1234
-3|vighnesh|4562123285|vighnesh@sk|103|4550.0|current|1245

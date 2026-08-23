@@ -2,6 +2,7 @@
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -66,7 +67,7 @@ public class BankAccount {
         double amount;
 
         while (true) {
-            amount = main.getDoubleInput(scanner, "Enter the amount to deposit in number " + bankAccountNum + ": ");
+            amount = Main.getDoubleInput(scanner, "Enter the amount to deposit in number " + bankAccountNum + ": ");
 
             if (amount <= 0) {
                 System.out.println("Amount must be greater than zero.");
@@ -74,8 +75,8 @@ public class BankAccount {
                 balance += amount;
                 System.out.println("Amount deposited successfully in Account number " + bankAccountNum);
                 System.out.println("Balance: " + balance);
-                transactions.add("-> " + generateTransactionID() + " - Deposit: +"
-                        + amount + " - Balance: " + balance + " - " + getCurrentTime());
+                addTransactions(generateTransactionID(), "Deposit", amount);
+
                 return true;
             }
         }
@@ -85,12 +86,12 @@ public class BankAccount {
     public static BankAccount createBankAccount(Scanner scanner, Customer customer, ArrayList<BankAccount> accounts) {
         int accountNum;
 
-        accountNum = main.generateAccountNum(accounts);
+        accountNum = Main.generateAccountNum(accounts);
         System.out.println("Your Account number is: " + accountNum);
         double balance = 0;
 
         while (true) {
-            balance = main.getDoubleInput(scanner, "Enter your Initial Blance: ");
+            balance = Main.getDoubleInput(scanner, "Enter your Initial Balance: ");
 
             if (balance < 0) {
                 System.out.println("Initial balance can not be Negative.");
@@ -125,7 +126,7 @@ public class BankAccount {
 
         while (true) {
 
-            amount = main.getDoubleInput(scanner, "Enter the amount to withdraw from " + bankAccountNum + ": ");
+            amount = Main.getDoubleInput(scanner, "Enter the amount to withdraw from " + bankAccountNum + ": ");
 
             if (amount <= 0) {
                 System.out.println("Amount to withdraw can not be negative or zero");
@@ -137,8 +138,7 @@ public class BankAccount {
             balance -= amount;
             System.out.println("Amount withdrawn successfully from " + bankAccountNum);
             System.out.println("Balance: " + balance);
-            transactions.add("-> " + generateTransactionID() + " - Withdrawal: -" + amount
-                    + " - Balance: " + balance + " - " + getCurrentTime());
+            addTransactions(generateTransactionID(), "Withdrawal", -amount);
 
             return true;
         }
@@ -165,7 +165,7 @@ public class BankAccount {
 
         while (true) {
 
-            amount = main.getDoubleInput(scanner, "Enter the amount to transfer from " + bankAccountNum + ": ");
+            amount = Main.getDoubleInput(scanner, "Enter the amount to transfer from " + bankAccountNum + ": ");
 
             if (amount <= 0) {
                 System.out.println("Amount to transfer has to be greater than zero");
@@ -251,7 +251,7 @@ public class BankAccount {
         }
 
         pin = newPin;
-        System.out.println("Pin changed succeddfully.");
+        System.out.println("Pin changed succefully.");
         return true;
     }
 
@@ -279,16 +279,135 @@ public class BankAccount {
         return String.format("TXN%03d", transactionCounter++);
     }
 
-    public static void loadTransactionCounter() {
-        int highestID = 0;
+    public static void saveAccounts(ArrayList<BankAccount> accounts) {
+        try (FileWriter writer = new FileWriter("YashBankData.txt")) {
 
-        try {
-            BufferedReader reader
-                    = new BufferedReader(new FileReader("YashBankTransactions.txt"));
+            for (BankAccount account : accounts) {
+                writer.write(account.toFileString() + "\n");
+            }
+
+            System.out.println("Bank data saved successfully.");
+        } catch (IOException e) {
+            System.out.println("Error saving bank data: " + e.getMessage());
+        }
+    }
+
+    public static void loadAccounts(ArrayList<BankAccount> accounts, ArrayList<Customer> customers) {
+        try (BufferedReader reader = new BufferedReader(new FileReader("YashBankData.txt"))) {
 
             String line;
 
             while ((line = reader.readLine()) != null) {
+
+                if (line.isBlank()) {
+                    continue;
+                }
+
+                String[] data = line.split("\\|");
+
+                if (data.length < 8) {
+                    System.out.println("Skipping invalid bank data.");
+                    continue;
+                }
+
+                int customerID = Integer.parseInt(data[0]);
+                String name = data[1];
+                String phoneNum = data[2];
+                String email = data[3];
+
+                int accountNum = Integer.parseInt(data[4]);
+                double balance = Double.parseDouble(data[5]);
+                String accountType = data[6];
+                String pin = data[7];
+
+                Customer customer = new Customer(customerID, name, phoneNum, email);
+                BankAccount account = new BankAccount(accountNum, balance, customer, accountType, pin);
+
+                for (int i = 8; i < data.length; i++) {
+                    account.addTransactions(data[i]);
+                }
+
+                customers.add(customer);
+                accounts.add(account);
+            }
+        } catch (IOException e) {
+            System.out.println("Error loading bank data: " + e.getMessage());
+        }
+    }
+
+    public String toFileString() {
+        String data = customer.getCustomerID() + "|"
+                + customer.getName() + "|"
+                + customer.getPhoneNum() + "|"
+                + customer.getEmail() + "|"
+                + bankAccountNum + "|"
+                + balance + "|"
+                + accountType + "|"
+                + pin;
+        return data;
+    }
+
+    public void addTransactions(String transaction) {
+        transactions.add(transaction);
+    }
+
+    public static void saveTransaction(ArrayList<BankAccount> accounts) {
+        try (FileWriter writer = new FileWriter("YashBankTransactions.txt")) {
+
+            for (BankAccount account : accounts) {
+                for (String transaction : account.transactions) {
+                    writer.write(account.bankAccountNum + "|" + transaction + "\n");
+                }
+            }
+            System.out.println("Transactions saved successfully.");
+        } catch (IOException e) {
+            System.out.println("Error savings transactionss: " + e.getMessage());
+        }
+    }
+
+    public static void loadTransactions(ArrayList<BankAccount> accounts) {
+        try (BufferedReader reader = new BufferedReader(new FileReader("YashBankTransactions.txt"))) {
+
+            String line;
+
+            while ((line = reader.readLine()) != null) {
+                if (line.isBlank()) {
+                    continue;
+                }
+                String[] data = line.split("\\|", 2);
+                if (data.length < 2) {
+                    System.out.println("Skipping invalid bank data.");
+                    continue;
+                }
+
+                int accountNum = Integer.parseInt(data[0]);
+                String transaction = data[1];
+
+                for (BankAccount account : accounts) {
+                    if (account.getBankAccountNum() == accountNum) {
+                        account.addTransactions(transaction);
+                        break;
+                    }
+                }
+            }
+        } catch (IOException e) {
+            System.out.println("Error loading transactions: " + e.getMessage());
+        }
+    }
+
+    public static void loadTransactionCounter() {
+        int highestID = 0;
+
+        try (BufferedReader reader
+                = new BufferedReader(new FileReader("YashBankTransactions.txt"))) {
+
+            String line;
+
+            while ((line = reader.readLine()) != null) {
+
+                if (line.isBlank()) {
+                    continue;
+                }
 
                 int start = line.indexOf("TXN");
 
@@ -312,121 +431,21 @@ public class BankAccount {
                 }
             }
 
-            reader.close();
-
             transactionCounter = highestID + 1;
 
-        } catch (Exception e) {
-            System.out.println("Error loading transaction counter.");
+        } catch (IOException e) {
+            System.out.println("Error loading transaction counter: " + e.getMessage());
             transactionCounter = 1;
         }
     }
 
-    public static void saveAccounts(ArrayList<BankAccount> accounts) {
-        try {
-            FileWriter writer = new FileWriter("YashBankData.txt");
-
-            for (BankAccount account : accounts) {
-                writer.write(account.toFileString() + "\n");
-            }
-            writer.close();
-            System.out.println("Bank data saved successfully.");
-        } catch (Exception e) {
-            System.out.println("Error saving bank data.");
-        }
-    }
-
-    public static void loadAccounts(ArrayList<BankAccount> accounts, ArrayList<Customer> customers) {
-        try {
-            BufferedReader reader = new BufferedReader(new FileReader("YashBankData.txt"));
-
-            String line;
-
-            while ((line = reader.readLine()) != null) {
-
-                String[] data = line.split("\\|");
-
-                int customerID = Integer.parseInt(data[0]);
-                String name = data[1];
-                String phoneNum = data[2];
-                String email = data[3];
-
-                int accountNum = Integer.parseInt(data[4]);
-                double balance = Double.parseDouble(data[5]);
-                String accountType = data[6];
-                String pin = data[7];
-
-                Customer customer = new Customer(customerID, name, phoneNum, email);
-                BankAccount account = new BankAccount(accountNum, balance, customer, accountType, pin);
-
-                for (int i = 8; i < data.length; i++) {
-                    account.addTransactions(data[i]);
-                }
-
-                customers.add(customer);
-                accounts.add(account);
-            }
-            reader.close();
-
-        } catch (Exception e) {
-            System.out.println("Error loading bank data.");
-        }
-    }
-
-    public String toFileString() {
-        String data = customer.getCustomerID() + "|"
-                + customer.getName() + "|"
-                + customer.getPhoneNum() + "|"
-                + customer.getEmail() + "|"
-                + bankAccountNum + "|"
-                + balance + "|"
-                + accountType + "|"
-                + pin;
-        return data;
-    }
-
-    public void addTransactions(String transaction) {
-        transactions.add(transaction);
-    }
-
-    public static void saveTransaction(ArrayList<BankAccount> accounts) {
-        try {
-            FileWriter writer = new FileWriter("YashBankTransactions.txt");
-
-            for (BankAccount account : accounts) {
-                for (String transaction : account.transactions) {
-                    writer.write(account.bankAccountNum + "|" + transaction + "\n");
-                }
-            }
-            writer.close();
-            System.out.println("Transactions saved successfully.");
-        } catch (Exception e) {
-            System.out.println("Error savings transactionss.");
-        }
-    }
-
-    public static void loadTransactions(ArrayList<BankAccount> accounts) {
-        try {
-            BufferedReader reader = new BufferedReader(new FileReader("YashBankTransactions.txt"));
-
-            String line;
-
-            while ((line = reader.readLine()) != null) {
-                String[] data = line.split("\\|", 2);
-
-                int accountNum = Integer.parseInt(data[0]);
-                String transaction = data[1];
-
-                for (BankAccount account : accounts) {
-                    if (account.getBankAccountNum() == accountNum) {
-                        account.addTransactions(transaction);
-                        break;
-                    }
-                }
-            }
-            reader.close();
-        } catch (Exception e) {
-            System.out.println("Error loading transactions.");
-        }
+    public void addTransactions(String transactionID, String description, double amount) {
+        transactions.add(
+                "-> " + transactionID
+                + " - " + description
+                + ": " + (amount >= 0 ? "+" : "") + amount
+                + "- Balance: " + balance
+                + "- " + getCurrentTime()
+        );
     }
 }
