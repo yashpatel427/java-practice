@@ -1,0 +1,4 @@
+101|-> TXN001 - Deposit: +100.0 - Balance: 5350.0 - 23-08-2026 14:00:39
+102|-> TXN002 - Withdrawal: -50.0 - Balance: 4440.0 - 23-08-2026 14:00:57
+102|-> TXN003 - Transferred from Account 103: +50.0 - Balance: 4490.0 - 23-08-2026 14:01:19
+103|-> TXN003 - Transfer to account 102: -50.0 - Balance: 4550.0 - 23-08-2026 14:01:19

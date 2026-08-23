@@ -62,7 +62,7 @@ public class BankAccount {
         this.pin = pin;
     }
 
-    public void deposit(Scanner scanner) {
+    public boolean deposit(Scanner scanner) {
         double amount;
 
         while (true) {
@@ -74,9 +74,9 @@ public class BankAccount {
                 balance += amount;
                 System.out.println("Amount deposited successfully in Account number " + bankAccountNum);
                 System.out.println("Balance: " + balance);
-                transactions.add("-> " + generateTransactionID() + "| Deposit: +"
-                        + amount + " | Balance: " + balance + " | " + getCurrentTime());
-                break;
+                transactions.add("-> " + generateTransactionID() + " - Deposit: +"
+                        + amount + " - Balance: " + balance + " - " + getCurrentTime());
+                return true;
             }
         }
 
@@ -120,7 +120,7 @@ public class BankAccount {
 
     }
 
-    public void withdraw(Scanner scanner) {
+    public boolean withdraw(Scanner scanner) {
         double amount;
 
         while (true) {
@@ -134,13 +134,14 @@ public class BankAccount {
                 System.out.println("Insufficient Balance.");
                 continue;
             }
-            break;
+            balance -= amount;
+            System.out.println("Amount withdrawn successfully from " + bankAccountNum);
+            System.out.println("Balance: " + balance);
+            transactions.add("-> " + generateTransactionID() + " - Withdrawal: -" + amount
+                    + " - Balance: " + balance + " - " + getCurrentTime());
+
+            return true;
         }
-        balance -= amount;
-        System.out.println("Amount withdrawn successfully from " + bankAccountNum);
-        System.out.println("Balance: " + balance);
-        transactions.add("-> " + generateTransactionID() + "| Withdrawal: -" + amount
-                + " | Balance: " + balance + " | " + getCurrentTime());
     }
 
     public void displayInfo() {
@@ -159,7 +160,7 @@ public class BankAccount {
         System.out.println("-> Current Balance: " + getBalance());
     }
 
-    public void transfer(BankAccount receiver, Scanner scanner) {
+    public boolean transfer(BankAccount receiver, Scanner scanner) {
         double amount;
 
         while (true) {
@@ -174,15 +175,17 @@ public class BankAccount {
                 System.out.println("Insufficient Balance");
                 continue;
             }
-            break;
+            balance -= amount;
+            receiver.balance += amount;
+            String transactionId = generateTransactionID();
+            transactions.add("-> " + transactionId + " - Transfer to account "
+                    + receiver.bankAccountNum + ": -" + amount + " - Balance: " + balance + " - " + getCurrentTime());
+            receiver.transactions.add("-> " + transactionId + " - Transferred from Account "
+                    + bankAccountNum + ": +" + amount + " - Balance: " + receiver.balance + " - " + getCurrentTime());
+            System.out.println("Amount successfully transferred");
+
+            return true;
         }
-        balance -= amount;
-        receiver.balance += amount;
-        transactions.add("-> " + generateTransactionID() + "| Transfer to account "
-                + receiver.bankAccountNum + ": -" + amount + " | Balance: " + balance + " | " + getCurrentTime());
-        receiver.transactions.add("-> " + generateTransactionID() + "| Transferred from Account "
-                + bankAccountNum + ": +" + amount + " | Balance: " + balance + " | " + getCurrentTime());
-        System.out.println("Amount successfully transferred");
     }
 
     public void displayTransactions() {
@@ -214,19 +217,22 @@ public class BankAccount {
         return pin;
     }
 
-    public void changePin(Scanner scanner) {
+    public boolean changePin(Scanner scanner) {
         System.out.print("Enter your current pin: ");
         String currentPin = scanner.nextLine();
 
         if (!verifyPin(currentPin)) {
             System.out.println("Incorrect current pin!");
-            return;
+            return false;
         }
         String newPin;
         while (true) {
             System.out.print("Enter your new 4-Digit PIN: ");
             newPin = scanner.nextLine();
-
+            if (newPin.equals(currentPin)) {
+                System.out.println("New pin can not be same as previous one.");
+                return false;
+            }
             if (newPin.matches("\\d{4}")) {
                 break;
             }
@@ -237,15 +243,16 @@ public class BankAccount {
 
         if (!newPin.equals(confirmPin)) {
             System.out.println("Pin's does not match. Pin was not changed.");
-            return;
+            return false;
         }
         if (newPin.equals(pin)) {
             System.out.println("New pin can not be same as your previous pin.");
-            return;
+            return false;
         }
 
         pin = newPin;
         System.out.println("Pin changed succeddfully.");
+        return true;
     }
 
     public boolean verifyPin(String enteredPin) {
@@ -272,6 +279,49 @@ public class BankAccount {
         return String.format("TXN%03d", transactionCounter++);
     }
 
+    public static void loadTransactionCounter() {
+        int highestID = 0;
+
+        try {
+            BufferedReader reader
+                    = new BufferedReader(new FileReader("YashBankTransactions.txt"));
+
+            String line;
+
+            while ((line = reader.readLine()) != null) {
+
+                int start = line.indexOf("TXN");
+
+                if (start != -1) {
+
+                    int end = start + 3;
+
+                    while (end < line.length()
+                            && Character.isDigit(line.charAt(end))) {
+                        end++;
+                    }
+
+                    String numberString
+                            = line.substring(start + 3, end);
+
+                    int number = Integer.parseInt(numberString);
+
+                    if (number > highestID) {
+                        highestID = number;
+                    }
+                }
+            }
+
+            reader.close();
+
+            transactionCounter = highestID + 1;
+
+        } catch (Exception e) {
+            System.out.println("Error loading transaction counter.");
+            transactionCounter = 1;
+        }
+    }
+
     public static void saveAccounts(ArrayList<BankAccount> accounts) {
         try {
             FileWriter writer = new FileWriter("YashBankData.txt");
@@ -286,14 +336,14 @@ public class BankAccount {
         }
     }
 
-    public static void loadAccounts(ArrayList<BankAccount> accounts, ArrayList<Customer> customers){
+    public static void loadAccounts(ArrayList<BankAccount> accounts, ArrayList<Customer> customers) {
         try {
             BufferedReader reader = new BufferedReader(new FileReader("YashBankData.txt"));
 
             String line;
 
-            while((line = reader.readLine()) != null){
-                
+            while ((line = reader.readLine()) != null) {
+
                 String[] data = line.split("\\|");
 
                 int customerID = Integer.parseInt(data[0]);
@@ -309,6 +359,10 @@ public class BankAccount {
                 Customer customer = new Customer(customerID, name, phoneNum, email);
                 BankAccount account = new BankAccount(accountNum, balance, customer, accountType, pin);
 
+                for (int i = 8; i < data.length; i++) {
+                    account.addTransactions(data[i]);
+                }
+
                 customers.add(customer);
                 accounts.add(account);
             }
@@ -320,7 +374,7 @@ public class BankAccount {
     }
 
     public String toFileString() {
-        return customer.getCustomerID() + "|"
+        String data = customer.getCustomerID() + "|"
                 + customer.getName() + "|"
                 + customer.getPhoneNum() + "|"
                 + customer.getEmail() + "|"
@@ -328,6 +382,51 @@ public class BankAccount {
                 + balance + "|"
                 + accountType + "|"
                 + pin;
+        return data;
+    }
 
+    public void addTransactions(String transaction) {
+        transactions.add(transaction);
+    }
+
+    public static void saveTransaction(ArrayList<BankAccount> accounts) {
+        try {
+            FileWriter writer = new FileWriter("YashBankTransactions.txt");
+
+            for (BankAccount account : accounts) {
+                for (String transaction : account.transactions) {
+                    writer.write(account.bankAccountNum + "|" + transaction + "\n");
+                }
+            }
+            writer.close();
+            System.out.println("Transactions saved successfully.");
+        } catch (Exception e) {
+            System.out.println("Error savings transactionss.");
+        }
+    }
+
+    public static void loadTransactions(ArrayList<BankAccount> accounts) {
+        try {
+            BufferedReader reader = new BufferedReader(new FileReader("YashBankTransactions.txt"));
+
+            String line;
+
+            while ((line = reader.readLine()) != null) {
+                String[] data = line.split("\\|", 2);
+
+                int accountNum = Integer.parseInt(data[0]);
+                String transaction = data[1];
+
+                for (BankAccount account : accounts) {
+                    if (account.getBankAccountNum() == accountNum) {
+                        account.addTransactions(transaction);
+                        break;
+                    }
+                }
+            }
+            reader.close();
+        } catch (Exception e) {
+            System.out.println("Error loading transactions.");
+        }
     }
 }

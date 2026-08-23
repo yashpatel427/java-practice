@@ -13,6 +13,8 @@ public class main {
         ArrayList<BankAccount> accounts = new ArrayList<>();
 
         BankAccount.loadAccounts(accounts, customers);
+        BankAccount.loadTransactions(accounts);
+        BankAccount.loadTransactionCounter();
 
         boolean Running = true;
         while (Running) {
@@ -140,12 +142,16 @@ public class main {
                 case 2 ->
                     selectedAccount.checkBalance();
                 case 3 -> {
-                    selectedAccount.deposit(scanner);
-                    BankAccount.saveAccounts(accounts);
+                    if (selectedAccount.deposit(scanner)) {
+                        BankAccount.saveAccounts(accounts);
+                        BankAccount.saveTransaction(accounts);
+                    }
                 }
-                case 4 ->{
-                    selectedAccount.withdraw(scanner);
-                    BankAccount.saveAccounts(accounts);
+                case 4 -> {
+                    if (selectedAccount.withdraw(scanner)) {
+                        BankAccount.saveAccounts(accounts);
+                        BankAccount.saveTransaction(accounts);
+                    }
                 }
                 case 5 -> {
                     BankAccount receiver = null;
@@ -168,8 +174,10 @@ public class main {
                         }
                     }
                     System.out.println("Account Found!");
-                    selectedAccount.transfer(receiver, scanner);
-                    BankAccount.saveAccounts(accounts);
+                    if (selectedAccount.transfer(receiver, scanner)) {
+                        BankAccount.saveAccounts(accounts);
+                        BankAccount.saveTransaction(accounts);
+                    }
                 }
                 case 6 ->
                     selectedAccount.displayTransactions();
@@ -186,6 +194,7 @@ public class main {
                     if (deleted) {
                         customers.remove(selectedAccount.getCustomer());
                         accounts.remove(selectedAccount);
+                        BankAccount.saveAccounts(accounts);
                         System.out.println("Account deleted successfully.");
                         isRunning = false;
                     }
