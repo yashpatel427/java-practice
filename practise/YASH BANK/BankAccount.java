@@ -181,36 +181,36 @@ public class BankAccount {
         System.out.println("*Transaction History of " + getCustomer().getName() + "*");
 
         if (transactions.isEmpty()) {
-            System.out.println("-> NO Transaction yet.");
+            System.out.println("-> NO transaction yet.");
         } else {
             for (String transaction : transactions) {
                 System.out.println(transaction);
             }
         }
-        System.out.println("-> Current Blance: " + balance);
+        System.out.println("-> Current Balance: " + balance);
         System.out.println("***************************************************");
     }
 
     public static String createPin(Scanner scanner, int accountNum) {
 
-        System.out.print("Create a 4-Digit pin for Account number " + accountNum + ": ");
+        System.out.print("Create a 4-Digit PIN for Account number " + accountNum + ": ");
         String pin = scanner.nextLine();
 
         while (!pin.matches("\\d{4}")) {
 
-            System.out.println("Pin must be exactly 4 digit.");
-            System.out.print("Enter pin again: ");
+            System.out.println("PIN must be exactly 4 digit.");
+            System.out.print("Enter PIN again: ");
             pin = scanner.nextLine();
         }
         return pin;
     }
 
     public boolean changePin(Scanner scanner) {
-        System.out.print("Enter your current pin: ");
+        System.out.print("Enter your current PIN: ");
         String currentPin = scanner.nextLine();
 
         if (!verifyPin(currentPin)) {
-            System.out.println("Incorrect current pin!");
+            System.out.println("Incorrect current PIN!");
             return false;
         }
         String newPin;
@@ -218,24 +218,24 @@ public class BankAccount {
             System.out.print("Enter your new 4-Digit PIN: ");
             newPin = scanner.nextLine();
             if (newPin.equals(currentPin)) {
-                System.out.println("New pin can not be same as previous one.");
+                System.out.println("New PIN can not be same as previous one.");
                 return false;
             }
             if (newPin.matches("\\d{4}")) {
                 break;
             }
-            System.out.println("Pin must be exactly 4 digits.");
+            System.out.println("PIN must be exactly 4 digits.");
         }
-        System.out.print("Confirm your new pin: ");
+        System.out.print("Confirm your new PIN: ");
         String confirmPin = scanner.nextLine();
 
         if (!newPin.equals(confirmPin)) {
-            System.out.println("Pin's does not match. Pin was not changed.");
+            System.out.println("PINs do not match. Pin was not changed.");
             return false;
         }
 
         pin = newPin;
-        System.out.println("Pin changed succefully.");
+        System.out.println("PIN changed successfully.");
         return true;
     }
 
@@ -345,7 +345,7 @@ public class BankAccount {
             }
             System.out.println("Transactions saved successfully.");
         } catch (IOException e) {
-            System.out.println("Error savings transactionss: " + e.getMessage());
+            System.out.println("Error saving transactions: " + e.getMessage());
         }
     }
 

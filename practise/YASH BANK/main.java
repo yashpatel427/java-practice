@@ -91,7 +91,7 @@ public class Main {
 
         while (attempts < 3 && !authenticated) {
 
-            System.out.print("Enter your pin: ");
+            System.out.print("Enter your PIN: ");
             String enteredPin = scanner.nextLine();
 
             if (selectedAccount.verifyPin(enteredPin)) {
@@ -103,7 +103,7 @@ public class Main {
                 attempts++;
                 int remaining = 3 - attempts;
                 if (remaining > 0) {
-                    System.out.println("Incorrect Pin!");
+                    System.out.println("Incorrect PIN!");
                     System.out.println("Attempts remaining: " + remaining);
                 } else {
                     System.out.println("Too many incorrect attempts.");
@@ -124,13 +124,13 @@ public class Main {
 
         while (isRunning) {
             System.out.println("********Bank Menu********");
-            System.out.println("1.Dispaly Account Info ");
+            System.out.println("1.Display Account Info ");
             System.out.println("2.Check Balance        ");
             System.out.println("3.Deposit Money        ");
             System.out.println("4.Withdraw Money       ");
             System.out.println("5.Transfer Money       ");
             System.out.println("6.Transaction History  ");
-            System.out.println("7.Change Pin           ");
+            System.out.println("7.Change PIN           ");
             System.out.println("8.Delete Account       ");
             System.out.println("9.Logout               ");
             System.out.println("*************************");
