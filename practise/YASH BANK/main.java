@@ -49,6 +49,7 @@ public class Main {
                     System.out.println("******Account Created Successfully!******");
                     newAccount.displayInfo();
                     System.out.println("*****************************************");
+                    BankAccount.saveAccounts(accounts);
                     System.out.println("Total Accounts: " + accounts.size());
                 }
                 case 3 ->
