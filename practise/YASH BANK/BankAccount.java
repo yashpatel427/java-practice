@@ -73,7 +73,6 @@ public class BankAccount {
 
     public static BankAccount createBankAccount(Scanner scanner, Customer customer, ArrayList<BankAccount> accounts) {
         int accountNum;
-
         accountNum = Main.generateAccountNum(accounts);
         System.out.println("Your Account number is: " + accountNum);
         double balance = 0;
