@@ -13,6 +13,10 @@ public class Student implements Comparable<Student>{
     public int getMarks(){
         return marks;
     }
+
+    public String getName(){
+        return name;
+    }
     @Override
     public int compareTo(Student other){
         return this.marks - other.marks;
